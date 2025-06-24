@@ -87,7 +87,7 @@ const AddRecipe = () => {
             </div>
 
             <div>
-              <label className='font-bold'>Image</label>
+              <label className='font-bold'>Image</label><br/>
               <input className='border-2 h-52'
                 name="image"
                 type="file"

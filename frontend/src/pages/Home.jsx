@@ -35,9 +35,9 @@ const Home = () => {
   console.log("🍝 Recipes loaded:", recipes);
 
   return (
-    <div className="container mx-auto p-4  ">
+    <div className="container mx-auto p-4   ">
       <h1 className="font-bold text-8xl font-mono tracking-tighter">All Recipes</h1>
-      <div>
+      <div className='flex flex-wrap space-x-9'>
         {recipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
