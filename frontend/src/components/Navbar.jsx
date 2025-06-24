@@ -1,6 +1,7 @@
 // components/NavBar.jsx
 import { Link } from 'react-router-dom';
 
+
 const NavBar = () => (
   <nav className='flex justify-end '>
     <span className='hover:bg-green-400 sm:bg-green-500 border-black font-sans'><Link to="/"> <strong>Home</strong></Link> </span>|
@@ -9,4 +10,5 @@ const NavBar = () => (
   </nav>
 );
 
-export default NavBar;
+
+export default Navbar;
