@@ -22,7 +22,7 @@ const RecipeGrid = ({ food }) => {
 
   return (
     <div>
-      <div>
+      <div >
         <img src={food.image} alt={food.title} />
       </div>
       <div>

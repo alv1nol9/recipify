@@ -5,10 +5,11 @@ import About from './components/About';
 import AddRecipe from './components/AddRecipe';
 import ProfilePage from './components/ProfilePage';
 import Navbar from './components/Navbar';
-
+import './index.css'
 const App = () => {
   return (
     <>
+    <h1 className='text-yellow-800'> cool</h1>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
