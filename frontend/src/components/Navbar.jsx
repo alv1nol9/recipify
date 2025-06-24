@@ -1,18 +1,14 @@
 // components/NavBar.jsx
 import { Link } from 'react-router-dom';
 
-const Navbar = () => {
-  return (
-    <nav className="navbar">
-      <h2 className="logo">MySite</h2>
-      <ul className="nav-links">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/profile">Profile</Link></li>
-        <li><Link to="/recipe">Recipes</Link></li>
-      </ul>
-    </nav>
-  );
-};
+
+const NavBar = () => (
+  <nav className='flex justify-end '>
+    <span className='hover:bg-green-400 sm:bg-green-500 border-black font-sans'><Link to="/"> <strong>Home</strong></Link> </span>|
+    <span className='hover:bg-green-400 border-black font-sans'><Link to="/add"><strong>Add Recipe</strong></Link></span>|
+    <span className='hover:bg-green-400 border-black font-sans'><Link to="/my-recipes"><strong>My Recipes</strong></Link></span>
+  </nav>
+);
+
 
 export default Navbar;

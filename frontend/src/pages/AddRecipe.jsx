@@ -42,7 +42,7 @@ const AddRecipe = () => {
 
 
   return (
-    <div>
+    <div className='container mx-auto p-4 '>
       <h1>Add a New Recipe</h1>
 
       <Formik
@@ -98,11 +98,11 @@ const AddRecipe = () => {
                   setPreview(URL.createObjectURL(file));
                 }}
               />
-              {preview && <img src={preview} alt="preview" width="200px" />}
+              {preview && <img className= 'xl:w-16' src={preview} alt="preview" width="200px" />}
               <ErrorMessage name="image" component="div" />
             </div>
 
-            <button type="submit">Submit Recipe</button>
+            <button  className='font-bold  box-border border sm:bg-yellow-900 border-black rounded hover:bg-yellow-500'type="submit">Submit Recipe</button>
           </Form>
         )}
       </Formik>
