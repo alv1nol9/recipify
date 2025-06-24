@@ -42,8 +42,8 @@ const AddRecipe = () => {
 
 
   return (
-    <div className='container mx-auto p-4 '>
-      <h1>Add a New Recipe</h1>
+    <div className='container mx-auto p-4 flex content-center '>
+      <h1 className='font-bold text-8xl'>Add a New Recipe</h1>
 
       <Formik
         initialValues={initialValues}
@@ -53,31 +53,31 @@ const AddRecipe = () => {
         {({ values, setFieldValue }) => (
           <Form encType="multipart/form-data">
             <div>
-              <label>Title</label>
-              <Field name="title" />
+              <label className='font-bold'>Title</label><br/>
+              <Field name="title" className='border-2 h-6' /><br/>
               <ErrorMessage name="title" component="div" />
             </div>
 
             <div>
-              <label>Description</label>
-              <Field name="description" as="textarea" />
+              <label className='font-bold '>Description</label><br/>
+              <Field name="description"className='border-2 h-6' as="textarea" />
               <ErrorMessage name="description" component="div" />
             </div>
 
             <div>
-              <label>Ingredients</label>
+              <label className='font-bold'>Ingredients</label>
               <FieldArray name="ingredients">
                 {({ remove, push }) => (
                   <div>
                     {values.ingredients.map((ing, index) => (
                       <div key={index}>
-                        <Field name={`ingredients[${index}]`} />
-                        <button type="button" onClick={() => remove(index)}>
-                          Remove
+                        <Field name={`ingredients[${index}]`} className='border-2 h-6'/>
+                        <button className='text-white font-semibold border-none sm:bg-green-900   hover:bg-green-500'type="button" onClick={() => remove(index)}>
+                          - Remove
                         </button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => push('')}>
+                    <button className=' text-white border-none sm:bg-green-900   hover:bg-green-500 font-semibold'type="button" onClick={() => push('')}>
                       Add Ingredient
                     </button>
                   </div>
@@ -87,8 +87,8 @@ const AddRecipe = () => {
             </div>
 
             <div>
-              <label>Image</label>
-              <input
+              <label className='font-bold'>Image</label>
+              <input className='border-2 h-52'
                 name="image"
                 type="file"
                 accept="image/*"
@@ -98,11 +98,11 @@ const AddRecipe = () => {
                   setPreview(URL.createObjectURL(file));
                 }}
               />
-              {preview && <img className= 'xl:w-16' src={preview} alt="preview" width="200px" />}
+              {preview && <img className= ' h-52 border' src={preview} alt="preview" width="200px" />}
               <ErrorMessage name="image" component="div" />
             </div>
 
-            <button  className='font-bold  box-border border sm:bg-yellow-900 border-black rounded hover:bg-yellow-500'type="submit">Submit Recipe</button>
+            <button  className='font-semibold text-white border-none sm:bg-green-900   hover:bg-green-500' type="submit">Submit Recipe</button>
           </Form>
         )}
       </Formik>

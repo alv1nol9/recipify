@@ -35,7 +35,7 @@ const Home = () => {
   console.log("🍝 Recipes loaded:", recipes);
 
   return (
-    <div className="container mx-auto p-4 justify-center">
+    <div className="container mx-auto p-4  ">
       <h1 className="font-bold text-8xl font-mono tracking-tighter">All Recipes</h1>
       <div>
         {recipes.map((recipe) => (

@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import AddRecipe from './pages/AddRecipe';
 import RecipeDetails from './pages/RecipeDetails';
 import MyRecipes from './pages/MyRecipes';
-import Navbar from './components/Navbar';
+import NavBar from './components/NavBar';
 
 import './index.css'
 import './App.css';
@@ -15,7 +15,7 @@ function App() {
   return (
     <>
     <h1 className='text-yellow-800'> cool</h1>
-      <Navbar />
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/add" element={<AddRecipe />} />
