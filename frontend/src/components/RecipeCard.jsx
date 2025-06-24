@@ -1,15 +1,33 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const RecipeCard = ({recipe}) => {
-  
-    <div className='card'>
-      <h3>{recipe.title}</h3>
-      <img src={recipe.image_url} alt="#" className='recipe-image' />
+const RecipeCard = ({ recipe }) => {
+  const [likes, setLikes] = useState(0);
+
+  useEffect(() => {
+    const storedLikes = JSON.parse(localStorage.getItem('likes') || '{}');
+    setLikes(storedLikes[recipe.id] || 0);
+  }, [recipe.id]);
+
+  const handleLike = () => {
+    const storedLikes = JSON.parse(localStorage.getItem('likes') || '{}');
+    const newLikes = (storedLikes[recipe.id] || 0) + 1;
+    storedLikes[recipe.id] = newLikes;
+    localStorage.setItem('likes', JSON.stringify(storedLikes));
+    setLikes(newLikes);
+  };
+
+  return (
+    <div>
+      <img src={recipe.image_url} alt={recipe.title} width="250" />
+      <h2>{recipe.title}</h2>
       <p>{recipe.description}</p>
-     <Link to={`/recipes/${recipe.id}`}>View Details</Link>
+      <p>Likes: {likes}</p>
+      <button onClick={handleLike}>👍 Like</button>
+      <br />
+      <Link to={`/recipes/${recipe.id}`}>View</Link>
     </div>
-  
-}
+  );
+};
 
-export default RecipeCard
+export default RecipeCard;

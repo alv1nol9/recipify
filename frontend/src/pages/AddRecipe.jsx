@@ -19,29 +19,27 @@ const AddRecipe = () => {
     image: Yup.mixed().required('Image is required'),
   });
 
-  const handleSubmit = async (values, { resetForm }) => {
-    const formData = new FormData();
-    formData.append('title', values.title);
-    formData.append('description', values.description);
-    values.ingredients.forEach((ingredient, i) =>
-      formData.append(`ingredients[${i}]`, ingredient)
-    );
-    formData.append('image', values.image);
+ const handleSubmit = (values, { resetForm }) => {
+  const fakeUser = 'alvin'; // simulate logged-in user
 
-    try {
-      const res = await fetch('http://localhost:5000/recipes', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error('Failed to submit');
-      alert('Recipe added!');
-      resetForm();
-      setPreview(null);
-    } catch (err) {
-      console.error('Submission error:', err);
-    }
+  const newRecipe = {
+    id: Date.now(),
+    title: values.title,
+    description: values.description,
+    ingredients: values.ingredients,
+    image_url: preview, // use preview as the fake uploaded image
+    user: fakeUser,
   };
+
+  const existing = JSON.parse(localStorage.getItem('recipes') || '[]');
+  existing.push(newRecipe);
+  localStorage.setItem('recipes', JSON.stringify(existing));
+
+  alert('Recipe added successfully!');
+  resetForm();
+  setPreview(null);
+};
+
 
   return (
     <div>
