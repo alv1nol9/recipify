@@ -2,10 +2,10 @@
 import { Link } from 'react-router-dom';
 
 const NavBar = () => (
-  <nav>
-    <Link to="/">Home</Link> | 
-    <Link to="/add">Add Recipe</Link> | 
-    <Link to="/my-recipes">My Recipes</Link>
+  <nav className='flex justify-end '>
+    <span className='hover:bg-green-400 sm:bg-green-500 border-black font-sans'><Link to="/"> <strong>Home</strong></Link> </span>|
+    <span className='hover:bg-green-400 border-black font-sans'><Link to="/add"><strong>Add Recipe</strong></Link></span>|
+    <span className='hover:bg-green-400 border-black font-sans'><Link to="/my-recipes"><strong>My Recipes</strong></Link></span>
   </nav>
 );
 

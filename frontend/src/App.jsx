@@ -5,7 +5,8 @@ import AddRecipe from './pages/AddRecipe';
 import RecipeDetails from './pages/RecipeDetails';
 import MyRecipes from './pages/MyRecipes';
 import Navbar from './components/Navbar';
-
+import './index.css'
+import './App.css';
 function App() {
   return (
     <>

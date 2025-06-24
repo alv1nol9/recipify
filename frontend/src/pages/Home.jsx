@@ -33,8 +33,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <h1>All Recipes</h1>
+    <div className='container mx-auto p-4 justify-center'>
+      <h1 className='font-bold text-8xl font-mono tracking-tighter'>All Recipes</h1>
       {recipes.map((r) => (
         <RecipeCard key={r.id} recipe={r} />
       ))}

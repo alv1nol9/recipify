@@ -1,8 +1,9 @@
 function MyRecipes(){
-    return
+    
+    return(
     <div>
         My recipes
-    </div>
+    </div>)
 }
 
 export default MyRecipes;
