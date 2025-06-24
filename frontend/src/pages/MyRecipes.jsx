@@ -1,15 +1,7 @@
-<<<<<<< HEAD
-function MyRecipes(){
-    
-    return(
-    <div>
-        My recipes
-    </div>)
-}
-=======
+
+
 import { useEffect, useState } from 'react';
 import RecipeCard from '../components/RecipeCard';
->>>>>>> d39ffbcd75c463803f6cb8381f44cc1e9fd822ee
 
 const MyRecipes = () => {
   const [myRecipes, setMyRecipes] = useState([]);
