@@ -1,23 +1,23 @@
-import React from 'react';
+// App.jsx
 import { Routes, Route } from 'react-router-dom';
-import Home from './components/Home';
-import About from './components/About';
-import AddRecipe from './components/AddRecipe';
-import ProfilePage from './components/ProfilePage';
+import Home from './pages/Home';
+import AddRecipe from './pages/AddRecipe';
+import RecipeDetails from './pages/RecipeDetails';
+import MyRecipes from './pages/MyRecipes';
 import Navbar from './components/Navbar';
 
-const App = () => {
+function App() {
   return (
     <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/recipe" element={<AddRecipe />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/add" element={<AddRecipe />} />
+        <Route path="/recipes/:id" element={<RecipeDetails />} />
+        <Route path="/my-recipes" element={<MyRecipes />} />
       </Routes>
     </>
   );
-};
+}
 
 export default App;

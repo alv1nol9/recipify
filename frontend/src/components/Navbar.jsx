@@ -1,18 +1,12 @@
-import React from 'react';
+// components/NavBar.jsx
 import { Link } from 'react-router-dom';
 
-const Navbar = () => {
-  return (
-    <nav className="navbar">
-      <h2 className="logo">MySite</h2>
-      <ul className="nav-links">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/profile">Profile</Link></li>
-        <li><Link to="/recipe">Recipes</Link></li>
-      </ul>
-    </nav>
-  );
-};
+const NavBar = () => (
+  <nav>
+    <Link to="/">Home</Link> | 
+    <Link to="/add">Add Recipe</Link> | 
+    <Link to="/my-recipes">My Recipes</Link>
+  </nav>
+);
 
-export default Navbar;
+export default NavBar;
