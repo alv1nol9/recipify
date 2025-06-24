@@ -1,18 +1,18 @@
-import React from 'react';
+// components/NavBar.jsx
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav className=" flex ">
-      <h2 className=" ">MySite</h2>
-      <ul className="flex flex-row">
-        <li  className=' sm:bg-green-500'><Link to="/">Home</Link></li>
-        <li className='hover:bg-green-500'><Link to="/about">About</Link></li>
-        <li className='hover:bg-green-500'><Link to="/profile">Profile</Link></li>
-        <li className='hover:bg-green-500'><Link to="/recipe">Recipes</Link></li>
+    <nav className="navbar">
+      <h2 className="logo">MySite</h2>
+      <ul className="nav-links">
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/about">About</Link></li>
+        <li><Link to="/profile">Profile</Link></li>
+        <li><Link to="/recipe">Recipes</Link></li>
       </ul>
     </nav>
   );
 };
 
-export default Navbar;
+export default NavBar;
