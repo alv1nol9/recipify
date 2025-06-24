@@ -26,7 +26,17 @@ const RecipeDetails = () => {
             <li key={index}>{i}</li>
         ))}
         </ul>
+     
+      <hr />
 
+      <h3>Comments</h3>
+      <CommentForm onAddComment={handleAddComment} />
+
+      <ul>
+        {comments.map((c) => (
+          <li key={c.id}>{c.text}</li>
+        ))}
+      </ul>
     </div>
   );
 };
