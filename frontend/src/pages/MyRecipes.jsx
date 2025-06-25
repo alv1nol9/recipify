@@ -15,9 +15,9 @@ const MyRecipes = () => {
 
   return (
     <div>
-      <h1>My Recipes</h1>
+      <h1 className='flex justify-center font-bold text-3xl'>My Recipes</h1>
       {myRecipes.length === 0 ? (
-        <p>No recipes added yet</p>
+        <p className='font-bold text-yellow-500 flex justify-center' >No recipes added yet</p>
       ) : (
         myRecipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} />

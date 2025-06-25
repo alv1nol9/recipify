@@ -12,7 +12,7 @@ const RecipeDetails = () => {
       .catch(err => console.error('there was an error loading the recipe', err));
   }, [id]);
 
-  if (!recipe) return <p>Loading...</p>;
+  if (!recipe) return <p className='text-blue-700' >Loading...</p>;
 
   return (
     <div>
@@ -20,7 +20,7 @@ const RecipeDetails = () => {
       <img src={recipe.image_url} alt={recipe.title} style={{ width: '400px', borderRadius: '10px' }} />
       <p>{recipe.description}</p>
 
-            <h4>Vitu za kutumia</h4>
+            <h4 className='text-purple-800' >Vitu za kutumia</h4>
         <ul>
         {recipe.ingredients?.map((i, index) => (
             <li key={index}>{i}</li>
@@ -29,7 +29,7 @@ const RecipeDetails = () => {
 
       <hr />
 
-      <h3 className=''>Comments</h3>
+      <h3 className='text-pink-600 font-sans'>Comments</h3>
       <CommentForm onAddComment={handleAddComment} />
 
       <ul>

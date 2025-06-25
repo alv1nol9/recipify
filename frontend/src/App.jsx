@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-    <h1 className='text-yellow-800'> cool</h1>
+   
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
