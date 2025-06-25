@@ -9,7 +9,7 @@ const AddRecipe = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) navigate('/login'); // block unauthenticated users
+    if (!token) navigate('/login');
   }, []);
 
   const initialValues = {
@@ -58,8 +58,9 @@ const AddRecipe = () => {
   };
 
   return (
-    <div>
-      <h1>Add a New Recipe</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="font-bold text-4xl mb-4">Add a New Recipe</h1>
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -67,56 +68,64 @@ const AddRecipe = () => {
       >
         {({ values, setFieldValue }) => (
           <Form>
-            <div>
-              <label>Title</label>
-              <Field name="title" />
-              <ErrorMessage name="title" component="div" />
+            <div className="mb-4">
+              <label className="font-bold">Title</label>
+              <Field name="title" className="border p-1 w-full" />
+              <ErrorMessage name="title" component="div" className="text-red-500" />
             </div>
 
-            <div>
-              <label>Description</label>
-              <Field name="description" as="textarea" />
-              <ErrorMessage name="description" component="div" />
+            <div className="mb-4">
+              <label className="font-bold">Description</label>
+              <Field name="description" as="textarea" className="border p-1 w-full" />
+              <ErrorMessage name="description" component="div" className="text-red-500" />
             </div>
 
-            <div>
-              <label>Instructions</label>
-              <Field name="instructions" as="textarea" />
-              <ErrorMessage name="instructions" component="div" />
+            <div className="mb-4">
+              <label className="font-bold">Instructions</label>
+              <Field name="instructions" as="textarea" className="border p-1 w-full" />
+              <ErrorMessage name="instructions" component="div" className="text-red-500" />
             </div>
 
-            <div>
-              <label>Ingredients</label>
+            <div className="mb-4">
+              <label className="font-bold">Ingredients</label>
               <FieldArray name="ingredients">
                 {({ remove, push }) => (
                   <div>
                     {values.ingredients.map((_, index) => (
-                      <div key={index}>
-                        <Field name={`ingredients[${index}]`} />
-                        <button type="button" onClick={() => remove(index)}>Remove</button>
+                      <div key={index} className="flex items-center space-x-2 mb-2">
+                        <Field name={`ingredients[${index}]`} className="border p-1 w-full" />
+                        <button type="button" onClick={() => remove(index)} className="text-red-600 font-bold">−</button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => push('')}>Add Ingredient</button>
+                    <button type="button" onClick={() => push('')} className="text-green-700 font-bold">
+                      + Add Ingredient
+                    </button>
                   </div>
                 )}
               </FieldArray>
-              <ErrorMessage name="ingredients" component="div" />
+              <ErrorMessage name="ingredients" component="div" className="text-red-500" />
             </div>
 
-            <div>
-              <label>Image URL</label>
+            <div className="mb-4">
+              <label className="font-bold">Image URL</label>
               <Field
                 name="image_url"
+                className="border p-1 w-full"
                 onChange={(e) => {
                   setFieldValue('image_url', e.target.value);
                   setPreview(e.target.value);
                 }}
               />
-              {preview && <img src={preview} alt="preview" width="200px" />}
-              <ErrorMessage name="image_url" component="div" />
+              {preview && <img src={preview} alt="preview" className="h-40 mt-2 border" />}
+              <ErrorMessage name="image_url" component="div" className="text-red-500" />
             </div>
 
-            <button type="submit">Submit Recipe</button>
+            <button
+              type="submit"
+              className="bg-green-700 hover:bg-green-500 text-white px-4 py-2 rounded font-semibold"
+            >
+              Submit Recipe
+            </button>
           </Form>
         )}
       </Formik>

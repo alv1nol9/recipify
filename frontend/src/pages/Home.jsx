@@ -7,6 +7,7 @@ const Home = () => {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
+
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -29,16 +30,18 @@ const Home = () => {
       });
   }, []);
 
+
+  console.log("🍝 Recipes loaded:", recipes);
+
   return (
-    <div>
-      <h1>All Recipes</h1>
-      {recipes.length > 0 ? (
-        recipes.map((recipe) => (
+    <div className="container mx-auto p-4   ">
+      <h1 className="font-bold text-8xl font-mono tracking-tighter">All Recipes</h1>
+      <div className='flex flex-wrap space-x-9'>
+        {recipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} />
-        ))
-      ) : (
-      
-      )}
+        ))}
+      </div>
+
     </div>
   );
 };

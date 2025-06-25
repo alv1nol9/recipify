@@ -26,10 +26,10 @@ const RecipeDetails = () => {
             <li key={index}>{i}</li>
         ))}
         </ul>
-     
+
       <hr />
 
-      <h3>Comments</h3>
+      <h3 className=''>Comments</h3>
       <CommentForm onAddComment={handleAddComment} />
 
       <ul>
