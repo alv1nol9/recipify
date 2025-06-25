@@ -22,7 +22,7 @@ const RecipeCard = ({ recipe }) => {
       <img src={recipe.image_url} alt={recipe.title} width="250" />
       <h2>{recipe.title}</h2>
       <p>{recipe.description}</p>
-      <p>Likes: {likes}</p>
+      <p className='text-blue-900'>Likes: {likes}</p>
       <button onClick={handleLike}>👍 Like</button>
       <br />
       <Link to={`/recipes/${recipe.id}`}>View</Link>

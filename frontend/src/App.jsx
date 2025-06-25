@@ -13,13 +13,14 @@ function App() {
 
   return (
     <>
-   
+
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/add" element={<AddRecipe />} />
         <Route path="/recipes/:id" element={<RecipeDetails />} />
         <Route path="/my-recipes" element={<MyRecipes />} />
+    
       </Routes>
     </>
   );
