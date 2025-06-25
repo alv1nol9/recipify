@@ -1,49 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
 
 const AddRecipe = () => {
   const [preview, setPreview] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) navigate('/login');
+  }, []);
 
   const initialValues = {
     title: '',
     description: '',
     ingredients: [''],
-    image: null,
+    instructions: '',
+    image_url: '',
   };
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
+    instructions: Yup.string().required('Instructions are required'),
     ingredients: Yup.array().of(Yup.string().required('Required')),
-    image: Yup.mixed().required('Image is required'),
+    image_url: Yup.string().url('Must be a valid URL').required('Image URL is required'),
   });
 
- const handleSubmit = (values, { resetForm }) => {
-  const fakeUser = 'alvin'; // simulate logged-in user
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/recipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: values.title,
+          description: values.description,
+          ingredients: values.ingredients.join(','),
+          instructions: values.instructions,
+          image_url: values.image_url,
+        }),
+      });
 
-  const newRecipe = {
-    id: Date.now(),
-    title: values.title,
-    description: values.description,
-    ingredients: values.ingredients,
-    image_url: preview, // use preview as the fake uploaded image
-    user: fakeUser,
+      if (!res.ok) throw new Error('Failed to submit');
+      alert('Recipe added!');
+      resetForm();
+      setPreview(null);
+      navigate('/');
+    } catch (err) {
+      console.error('Error:', err);
+      alert('There was a problem submitting the recipe.');
+    }
   };
 
-  const existing = JSON.parse(localStorage.getItem('recipes') || '[]');
-  existing.push(newRecipe);
-  localStorage.setItem('recipes', JSON.stringify(existing));
-
-  alert('Recipe added successfully!');
-  resetForm();
-  setPreview(null);
-};
-
-
   return (
-    <div className='container mx-auto p-4 '>
-      <h1>Add a New Recipe</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="font-bold text-4xl mb-4">Add a New Recipe</h1>
 
       <Formik
         initialValues={initialValues}
@@ -51,58 +67,65 @@ const AddRecipe = () => {
         onSubmit={handleSubmit}
       >
         {({ values, setFieldValue }) => (
-          <Form encType="multipart/form-data">
-            <div>
-              <label>Title</label>
-              <Field name="title" />
-              <ErrorMessage name="title" component="div" />
+          <Form>
+            <div className="mb-4">
+              <label className="font-bold">Title</label>
+              <Field name="title" className="border p-1 w-full" />
+              <ErrorMessage name="title" component="div" className="text-red-500" />
             </div>
 
-            <div>
-              <label>Description</label>
-              <Field name="description" as="textarea" />
-              <ErrorMessage name="description" component="div" />
+            <div className="mb-4">
+              <label className="font-bold">Description</label>
+              <Field name="description" as="textarea" className="border p-1 w-full" />
+              <ErrorMessage name="description" component="div" className="text-red-500" />
             </div>
 
-            <div>
-              <label>Ingredients</label>
+            <div className="mb-4">
+              <label className="font-bold">Instructions</label>
+              <Field name="instructions" as="textarea" className="border p-1 w-full" />
+              <ErrorMessage name="instructions" component="div" className="text-red-500" />
+            </div>
+
+            <div className="mb-4">
+              <label className="font-bold">Ingredients</label>
               <FieldArray name="ingredients">
                 {({ remove, push }) => (
                   <div>
-                    {values.ingredients.map((ing, index) => (
-                      <div key={index}>
-                        <Field name={`ingredients[${index}]`} />
-                        <button type="button" onClick={() => remove(index)}>
-                          Remove
-                        </button>
+                    {values.ingredients.map((_, index) => (
+                      <div key={index} className="flex items-center space-x-2 mb-2">
+                        <Field name={`ingredients[${index}]`} className="border p-1 w-full" />
+                        <button type="button" onClick={() => remove(index)} className="text-red-600 font-bold">−</button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => push('')}>
-                      Add Ingredient
+                    <button type="button" onClick={() => push('')} className="text-green-700 font-bold">
+                      + Add Ingredient
                     </button>
                   </div>
                 )}
               </FieldArray>
-              <ErrorMessage name="ingredients" component="div" />
+              <ErrorMessage name="ingredients" component="div" className="text-red-500" />
             </div>
 
-            <div>
-              <label>Image</label>
-              <input
-                name="image"
-                type="file"
-                accept="image/*"
+            <div className="mb-4">
+              <label className="font-bold">Image URL</label>
+              <Field
+                name="image_url"
+                className="border p-1 w-full"
                 onChange={(e) => {
-                  const file = e.target.files[0];
-                  setFieldValue('image', file);
-                  setPreview(URL.createObjectURL(file));
+                  setFieldValue('image_url', e.target.value);
+                  setPreview(e.target.value);
                 }}
               />
-              {preview && <img className= 'xl:w-16' src={preview} alt="preview" width="200px" />}
-              <ErrorMessage name="image" component="div" />
+              {preview && <img src={preview} alt="preview" className="h-40 mt-2 border" />}
+              <ErrorMessage name="image_url" component="div" className="text-red-500" />
             </div>
 
-            <button  className='font-bold  box-border border sm:bg-yellow-900 border-black rounded hover:bg-yellow-500'type="submit">Submit Recipe</button>
+            <button
+              type="submit"
+              className="bg-green-700 hover:bg-green-500 text-white px-4 py-2 rounded font-semibold"
+            >
+              Submit Recipe
+            </button>
           </Form>
         )}
       </Formik>
