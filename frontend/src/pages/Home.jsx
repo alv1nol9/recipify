@@ -1,44 +1,44 @@
 import { useEffect, useState } from 'react';
 import RecipeCard from '../components/RecipeCard';
 
+const API = 'http://localhost:5000/api';
+
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-const fakeData = [
-  {
-    id: 1,
-    title: 'Spaghetti Bolognese',
-    description: 'Classic pasta dish',
-    ingredients: ['pasta', 'tomato', 'meat'],
-    image_url: 'https://picsum.photos/400/300?random=1',
-  },
-  {
-    id: 2,
-    title: 'Burger Deluxe',
-    description: 'Beef burger with cheese and bacon',
-    ingredients: ['bun', 'beef', 'cheese'],
-    image_url: 'https://picsum.photos/400/300?random=2',
-  },
-  {
-    id: 3,
-    title: 'Nyama Choma',
-    description: 'Grilled Kenyan-style meat',
-    ingredients: ['goat meat', 'salt', 'lemon'],
-    image_url: 'https://picsum.photos/400/300?random=3',
-  },
-];
+    const token = localStorage.getItem('token');
 
-    setRecipes(fakeData);
+    if (!token) {
+      console.error('🚫 No token found — user must be logged in');
+      return;
+    }
+
+    fetch(`${API}/recipes`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("🍝 Real recipes loaded:", data);
+        setRecipes(data);
+      })
+      .catch(err => {
+        console.error('❌ Failed to fetch recipes:', err);
+      });
   }, []);
-  
-  console.log("🍝 Recipes loaded:", recipes);
+
   return (
     <div>
       <h1>All Recipes</h1>
-      {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe} />
-      ))}
+      {recipes.length > 0 ? (
+        recipes.map((recipe) => (
+          <RecipeCard key={recipe.id} recipe={recipe} />
+        ))
+      ) : (
+      
+      )}
     </div>
   );
 };

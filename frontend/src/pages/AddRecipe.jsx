@@ -1,57 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
 
 const AddRecipe = () => {
   const [preview, setPreview] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) navigate('/login'); // block unauthenticated users
+  }, []);
 
   const initialValues = {
     title: '',
     description: '',
     ingredients: [''],
-    image: null,
+    instructions: '',
+    image_url: '',
   };
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
+    instructions: Yup.string().required('Instructions are required'),
     ingredients: Yup.array().of(Yup.string().required('Required')),
-    image: Yup.mixed().required('Image is required'),
+    image_url: Yup.string().url('Must be a valid URL').required('Image URL is required'),
   });
 
- const handleSubmit = (values, { resetForm }) => {
-  const fakeUser = 'alvin'; // simulate logged-in user
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/recipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: values.title,
+          description: values.description,
+          ingredients: values.ingredients.join(','),
+          instructions: values.instructions,
+          image_url: values.image_url,
+        }),
+      });
 
-  const newRecipe = {
-    id: Date.now(),
-    title: values.title,
-    description: values.description,
-    ingredients: values.ingredients,
-    image_url: preview, // use preview as the fake uploaded image
-    user: fakeUser,
+      if (!res.ok) throw new Error('Failed to submit');
+      alert('Recipe added!');
+      resetForm();
+      setPreview(null);
+      navigate('/');
+    } catch (err) {
+      console.error('Error:', err);
+      alert('There was a problem submitting the recipe.');
+    }
   };
-
-  const existing = JSON.parse(localStorage.getItem('recipes') || '[]');
-  existing.push(newRecipe);
-  localStorage.setItem('recipes', JSON.stringify(existing));
-
-  alert('Recipe added successfully!');
-  resetForm();
-  setPreview(null);
-};
-
 
   return (
     <div>
       <h1>Add a New Recipe</h1>
-
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ values, setFieldValue }) => (
-          <Form encType="multipart/form-data">
+          <Form>
             <div>
               <label>Title</label>
               <Field name="title" />
@@ -65,21 +80,23 @@ const AddRecipe = () => {
             </div>
 
             <div>
+              <label>Instructions</label>
+              <Field name="instructions" as="textarea" />
+              <ErrorMessage name="instructions" component="div" />
+            </div>
+
+            <div>
               <label>Ingredients</label>
               <FieldArray name="ingredients">
                 {({ remove, push }) => (
                   <div>
-                    {values.ingredients.map((ing, index) => (
+                    {values.ingredients.map((_, index) => (
                       <div key={index}>
                         <Field name={`ingredients[${index}]`} />
-                        <button type="button" onClick={() => remove(index)}>
-                          Remove
-                        </button>
+                        <button type="button" onClick={() => remove(index)}>Remove</button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => push('')}>
-                      Add Ingredient
-                    </button>
+                    <button type="button" onClick={() => push('')}>Add Ingredient</button>
                   </div>
                 )}
               </FieldArray>
@@ -87,19 +104,16 @@ const AddRecipe = () => {
             </div>
 
             <div>
-              <label>Image</label>
-              <input
-                name="image"
-                type="file"
-                accept="image/*"
+              <label>Image URL</label>
+              <Field
+                name="image_url"
                 onChange={(e) => {
-                  const file = e.target.files[0];
-                  setFieldValue('image', file);
-                  setPreview(URL.createObjectURL(file));
+                  setFieldValue('image_url', e.target.value);
+                  setPreview(e.target.value);
                 }}
               />
               {preview && <img src={preview} alt="preview" width="200px" />}
-              <ErrorMessage name="image" component="div" />
+              <ErrorMessage name="image_url" component="div" />
             </div>
 
             <button type="submit">Submit Recipe</button>
