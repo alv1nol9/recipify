@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
+import { isLoggedIn } from '../utils/auth';
 
 const AddRecipe = () => {
   const [preview, setPreview] = useState(null);
@@ -9,7 +10,9 @@ const AddRecipe = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) navigate('/login');
+    if (!token || !isLoggedIn()) {
+      navigate('/login');
+    }
   }, []);
 
   const initialValues = {
@@ -94,10 +97,20 @@ const AddRecipe = () => {
                     {values.ingredients.map((_, index) => (
                       <div key={index} className="flex items-center space-x-2 mb-2">
                         <Field name={`ingredients[${index}]`} className="border p-1 w-full" />
-                        <button type="button" onClick={() => remove(index)} className="text-red-600 font-bold">−</button>
+                        <button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="text-red-600 font-bold"
+                        >
+                          −
+                        </button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => push('')} className="text-green-700 font-bold">
+                    <button
+                      type="button"
+                      onClick={() => push('')}
+                      className="text-green-700 font-bold"
+                    >
                       + Add Ingredient
                     </button>
                   </div>
