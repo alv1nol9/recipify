@@ -1,4 +1,4 @@
-// components/NavBar.jsx
+
 import { Link } from 'react-router-dom';
 import Icon from '@mdi/react';
 import { mdiSilverware } from '@mdi/js';
