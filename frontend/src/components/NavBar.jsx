@@ -1,12 +1,16 @@
 // components/NavBar.jsx
 import { Link } from 'react-router-dom';
-
+import Icon from '@mdi/react';
+import { mdiSilverware } from '@mdi/js';
 
 const NavBar = () => (
-  <nav className='flex justify-center  text-4xl space-x-3'>
-    <span className='hover:bg-green-400 text-white sm:bg-green-500 border-black sans-serif'><Link to="/"> <strong>Home</strong></Link> </span>|
-    <span className='hover:bg-green-400 border-black sans-serif'><Link to="/add"><strong>Add Recipe</strong></Link></span>|
-    <span className='hover:bg-green-400 border-black sans-serif'><Link to="/my-recipes"><strong>My Recipes</strong></Link></span>
+  <nav className='flex justify-start text-4xl space-x-8 sm:bg-green-900 h-14'>
+   <div className='flex justify-start'>
+     <div><Icon className='bg-indigo-700 '  path={mdiSilverware} size={2} /></div>
+     </div>
+    <span className='hover:text-green-300 text-sm text-white border-black sans-serif p-5'><Link to="/"> <strong>Home</strong></Link> </span>
+    <span className=' hover:text-green-300 text-sm text-white border-black sans-serif p-5'><Link to="/add"><strong>Add Recipe</strong></Link></span>
+    <span className='hover:text-green-300 text-sm text-white border-black sans-serif p-5'><Link to="/my-recipes"><strong>My Recipes</strong></Link></span>
   </nav>
 );
 
