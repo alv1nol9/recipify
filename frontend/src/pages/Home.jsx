@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import RecipeCard from '../components/RecipeCard';
+import Footer from '../components/Footer';
 
 const API = 'http://localhost:5000/api';
 
@@ -63,8 +64,10 @@ const Home = () => {
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
         </div>
+
       )}
     </div>
+    
   );
 };
 
