@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import CommentForm from '../components/CommentForm';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -8,6 +8,8 @@ const RecipeDetails = () => {
   const [recipe, setRecipe] = useState(null);
   const [comments, setComments] = useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const token = localStorage.getItem('token');
   const userId = token ? JSON.parse(atob(token.split('.')[1])).identity : null;
 
@@ -59,14 +61,40 @@ const RecipeDetails = () => {
     }
   };
 
+  const handleDeleteRecipe = async () => {
+    if (!window.confirm('Are you sure you want to delete this recipe?')) return;
+    const res = await fetch(`${API}/recipes/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.ok) {
+      alert('Recipe deleted');
+      navigate('/'); // Go back to home
+    } else {
+      alert('Failed to delete recipe');
+    }
+  };
+
   if (!recipe) return <p className="text-center text-gray-600">Loading...</p>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 py-8 px-4 sm:px-8 md:px-16">
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
-        <h2 className="text-4xl font-bold text-purple-700 mb-4">{recipe.title}</h2>
+        <div className="flex justify-between items-start">
+          <h2 className="text-4xl font-bold text-purple-700 mb-4">{recipe.title}</h2>
+          {recipe.user_id === userId && (
+            <button
+              onClick={handleDeleteRecipe}
+              className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >
+              🗑️ Delete
+            </button>
+          )}
+        </div>
+
         <img
-          src={recipe.image_url}
+          src={`http://localhost:5000${recipe.image_url}`}
           alt={recipe.title}
           className="w-full max-h-96 object-cover rounded-md mb-4"
         />

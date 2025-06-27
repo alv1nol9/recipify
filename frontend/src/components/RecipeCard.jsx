@@ -37,7 +37,11 @@ const RecipeCard = ({ recipe }) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-4 w-full sm:w-72 transition hover:shadow-xl">
       <img
-        src={recipe.image_url}
+         src={
+        recipe.image_url
+          ? `http://localhost:5000${recipe.image_url}`
+          : 'https://via.placeholder.com/400x300?text=No+Image'
+      }
         alt={recipe.title}
         className="w-full h-44 object-cover rounded-xl mb-3 border border-purple-200"
       />

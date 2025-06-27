@@ -33,54 +33,68 @@ const AddRecipe = () => {
   });
 
   const uploadImage = async (file, token) => {
-    const formData = new FormData();
-    formData.append('image', file);
+  if (!file) throw new Error('No image file selected');
 
-    const res = await fetch('http://localhost:5000/api/upload', {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const res = await fetch('http://localhost:5000/api/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+   
+    },
+    body: formData,
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Image upload failed');
+  return data.url;
+};
+
+ const handleSubmit = async (values, { resetForm }) => {
+  try {
+    console.log("🧪 Submitting recipe with values:", values);
+    const token = localStorage.getItem('token');
+    let image_url = values.image_url;
+
+    if (values.image) {
+      console.log("📤 Uploading image:", values.image.name);
+      image_url = await uploadImage(values.image, token);
+      console.log("✅ Uploaded image URL:", image_url);
+    }
+
+    const res = await fetch('http://localhost:5000/api/recipes', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: values.title,
+        description: values.description,
+        ingredients: values.ingredients.join(','),
+        instructions: values.instructions,
+        image_url,
+      }),
     });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Image upload failed');
-    return data.url;
-  };
-
-  const handleSubmit = async (values, { resetForm }) => {
-    try {
-      const token = localStorage.getItem('token');
-      let image_url = values.image_url;
-
-      if (values.image) {
-        image_url = await uploadImage(values.image, token);
-      }
-
-      const res = await fetch('http://localhost:5000/api/recipes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: values.title,
-          description: values.description,
-          ingredients: values.ingredients.join(','),
-          instructions: values.instructions,
-          image_url,
-        }),
-      });
-
-      if (!res.ok) throw new Error('Failed to submit recipe');
-      alert('Recipe added!');
-      resetForm();
-      setPreview(null);
-      navigate('/');
-    } catch (err) {
-      console.error('Error:', err);
-      alert('There was a problem submitting the recipe.');
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("❌ Recipe submission failed:", errorText);
+      throw new Error('Failed to submit recipe');
     }
-  };
+
+    alert('✅ Recipe added!');
+    resetForm();
+    setPreview(null);
+    navigate('/');
+  } catch (err) {
+    console.error('🚨 Error in submit handler:', err);
+    alert('There was a problem submitting the recipe.');
+  }
+};
+
 
   return (
     <div className="max-w-3xl mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-md">
