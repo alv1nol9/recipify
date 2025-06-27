@@ -1,42 +1,111 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import CommentForm from '../components/CommentForm';
+
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const RecipeDetails = () => {
   const [recipe, setRecipe] = useState(null);
+  const [comments, setComments] = useState([]);
   const { id } = useParams();
+  const token = localStorage.getItem('token');
+  const userId = token ? JSON.parse(atob(token.split('.')[1])).identity : null;
 
   useEffect(() => {
-    fetch(`http://localhost:5000/recipes/${id}`)
-      .then(res => res.json())
-      .then(setRecipe)
-      .catch(err => console.error('there was an error loading the recipe', err));
+    fetch(`${API}/recipes/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setRecipe(data);
+        setComments(data.comments || []);
+      })
+      .catch((err) => console.error('Error loading recipe:', err));
   }, [id]);
 
-  if (!recipe) return <p className='text-blue-700' >Loading...</p>;
+  const handleAddComment = async (text) => {
+    try {
+      const res = await fetch(`${API}/comments/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setComments((prev) => [...prev, { id: data.id, text, user_id: userId }]);
+      } else {
+        alert('Failed to post comment');
+      }
+    } catch (err) {
+      console.error('Failed to post comment:', err);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm('Delete this comment?')) return;
+    const res = await fetch(`${API}/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.ok) {
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    } else {
+      alert('Failed to delete comment');
+    }
+  };
+
+  if (!recipe) return <p className="text-center text-gray-600">Loading...</p>;
 
   return (
-    <div>
-      <h2>{recipe.title}</h2>
-      <img src={recipe.image_url} alt={recipe.title} style={{ width: '400px', borderRadius: '10px' }} />
-      <p>{recipe.description}</p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 py-8 px-4 sm:px-8 md:px-16">
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
+        <h2 className="text-4xl font-bold text-purple-700 mb-4">{recipe.title}</h2>
+        <img
+          src={recipe.image_url}
+          alt={recipe.title}
+          className="w-full max-h-96 object-cover rounded-md mb-4"
+        />
+        <p className="text-gray-700 text-md mb-4">{recipe.description}</p>
 
-            <h4 className='text-purple-800' >Vitu za kutumia</h4>
-        <ul>
-        {recipe.ingredients?.map((i, index) => (
-            <li key={index}>{i}</li>
-        ))}
+        <h4 className="text-xl text-pink-700 font-semibold mb-2">Ingredients</h4>
+        <ul className="list-disc list-inside text-gray-800 mb-6">
+          {recipe.ingredients?.split(',').map((i, index) => (
+            <li key={index}>{i.trim()}</li>
+          ))}
         </ul>
 
-      <hr />
+        <h3 className="text-xl text-purple-700 font-semibold mb-2">Instructions</h3>
+        <p className="text-gray-800 leading-relaxed mb-6">{recipe.instructions}</p>
 
-      <h3 className='text-pink-600 font-sans'>Comments</h3>
-      <CommentForm onAddComment={handleAddComment} />
+        <div className="border-t pt-4 mt-4">
+          <h3 className="text-xl text-pink-600 font-semibold mb-2">Comments</h3>
+          <CommentForm onAddComment={handleAddComment} />
 
-      <ul>
-        {comments.map((c) => (
-          <li key={c.id}>{c.text}</li>
-        ))}
-      </ul>
+          <ul className="mt-4 space-y-3">
+            {comments.map((c) => (
+              <li
+                key={c.id}
+                className="bg-purple-50 border border-purple-200 p-3 rounded-lg flex justify-between items-center"
+              >
+                <span className="text-gray-800">{c.text}</span>
+                {c.user_id === userId && (
+                  <button
+                    onClick={() => handleDeleteComment(c.id)}
+                    className="text-xs text-red-600 hover:text-red-800"
+                  >
+                    🗑️
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
+import { isLoggedIn } from '../utils/auth';
 
 const AddRecipe = () => {
   const [preview, setPreview] = useState(null);
@@ -9,7 +10,9 @@ const AddRecipe = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) navigate('/login');
+    if (!token || !isLoggedIn()) {
+      navigate('/login');
+    }
   }, []);
 
   const initialValues = {
@@ -18,6 +21,7 @@ const AddRecipe = () => {
     ingredients: [''],
     instructions: '',
     image_url: '',
+    image: null,
   };
 
   const validationSchema = Yup.object({
@@ -25,12 +29,33 @@ const AddRecipe = () => {
     description: Yup.string().required('Description is required'),
     instructions: Yup.string().required('Instructions are required'),
     ingredients: Yup.array().of(Yup.string().required('Required')),
-    image_url: Yup.string().url('Must be a valid URL').required('Image URL is required'),
+    image_url: Yup.string().url('Must be a valid URL'),
   });
+
+  const uploadImage = async (file, token) => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await fetch('http://localhost:5000/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Image upload failed');
+    return data.url;
+  };
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
       const token = localStorage.getItem('token');
+      let image_url = values.image_url;
+
+      if (values.image) {
+        image_url = await uploadImage(values.image, token);
+      }
+
       const res = await fetch('http://localhost:5000/api/recipes', {
         method: 'POST',
         headers: {
@@ -42,11 +67,11 @@ const AddRecipe = () => {
           description: values.description,
           ingredients: values.ingredients.join(','),
           instructions: values.instructions,
-          image_url: values.image_url,
+          image_url,
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to submit');
+      if (!res.ok) throw new Error('Failed to submit recipe');
       alert('Recipe added!');
       resetForm();
       setPreview(null);
@@ -58,8 +83,8 @@ const AddRecipe = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="font-bold text-4xl mb-4">Add a New Recipe</h1>
+    <div className="max-w-3xl mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-md">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 text-purple-700">Add a New Recipe</h1>
 
       <Formik
         initialValues={initialValues}
@@ -67,62 +92,92 @@ const AddRecipe = () => {
         onSubmit={handleSubmit}
       >
         {({ values, setFieldValue }) => (
-          <Form>
-            <div className="mb-4">
-              <label className="font-bold">Title</label>
-              <Field name="title" className="border p-1 w-full" />
-              <ErrorMessage name="title" component="div" className="text-red-500" />
+          <Form className="space-y-5">
+            <div>
+              <label className="font-semibold text-pink-600">Title</label>
+              <Field name="title" className="border rounded px-3 py-2 w-full mt-1" />
+              <ErrorMessage name="title" component="div" className="text-red-500 text-sm" />
             </div>
 
-            <div className="mb-4">
-              <label className="font-bold">Description</label>
-              <Field name="description" as="textarea" className="border p-1 w-full" />
-              <ErrorMessage name="description" component="div" className="text-red-500" />
+            <div>
+              <label className="font-semibold text-pink-600">Description</label>
+              <Field name="description" as="textarea" rows={3} className="border rounded px-3 py-2 w-full mt-1" />
+              <ErrorMessage name="description" component="div" className="text-red-500 text-sm" />
             </div>
 
-            <div className="mb-4">
-              <label className="font-bold">Instructions</label>
-              <Field name="instructions" as="textarea" className="border p-1 w-full" />
-              <ErrorMessage name="instructions" component="div" className="text-red-500" />
+            <div>
+              <label className="font-semibold text-pink-600">Instructions</label>
+              <Field name="instructions" as="textarea" rows={5} className="border rounded px-3 py-2 w-full mt-1" />
+              <ErrorMessage name="instructions" component="div" className="text-red-500 text-sm" />
             </div>
 
-            <div className="mb-4">
-              <label className="font-bold">Ingredients</label>
+            <div>
+              <label className="font-semibold text-pink-600">Ingredients</label>
               <FieldArray name="ingredients">
                 {({ remove, push }) => (
-                  <div>
+                  <div className="space-y-2 mt-1">
                     {values.ingredients.map((_, index) => (
-                      <div key={index} className="flex items-center space-x-2 mb-2">
-                        <Field name={`ingredients[${index}]`} className="border p-1 w-full" />
-                        <button type="button" onClick={() => remove(index)} className="text-red-600 font-bold">−</button>
+                      <div key={index} className="flex gap-2 items-center">
+                        <Field name={`ingredients[${index}]`} className="border rounded px-3 py-2 w-full" />
+                        <button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="text-red-500 text-xl"
+                        >
+                          −
+                        </button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => push('')} className="text-green-700 font-bold">
+                    <button
+                      type="button"
+                      onClick={() => push('')}
+                      className="text-purple-600 mt-2 font-semibold"
+                    >
                       + Add Ingredient
                     </button>
                   </div>
                 )}
               </FieldArray>
-              <ErrorMessage name="ingredients" component="div" className="text-red-500" />
             </div>
 
-            <div className="mb-4">
-              <label className="font-bold">Image URL</label>
+            <div>
+              <label className="font-semibold text-pink-600">Upload Image (Optional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setFieldValue('image', file);
+                    setPreview(URL.createObjectURL(file));
+                  }
+                }}
+                className="border rounded px-3 py-2 w-full mt-1"
+              />
+            </div>
+
+            <div>
+              <label className="font-semibold text-pink-600">Or Paste Image URL</label>
               <Field
                 name="image_url"
-                className="border p-1 w-full"
+                className="border rounded px-3 py-2 w-full mt-1"
                 onChange={(e) => {
                   setFieldValue('image_url', e.target.value);
                   setPreview(e.target.value);
                 }}
               />
-              {preview && <img src={preview} alt="preview" className="h-40 mt-2 border" />}
-              <ErrorMessage name="image_url" component="div" className="text-red-500" />
+              <ErrorMessage name="image_url" component="div" className="text-red-500 text-sm" />
             </div>
+
+            {preview && (
+              <div className="mt-4">
+                <img src={preview} alt="preview" className="h-40 border rounded-lg mx-auto" />
+              </div>
+            )}
 
             <button
               type="submit"
-              className="bg-green-700 hover:bg-green-500 text-white px-4 py-2 rounded font-semibold"
+              className="bg-pink-600 hover:bg-pink-500 text-white py-2 px-6 rounded-full font-bold w-full transition"
             >
               Submit Recipe
             </button>
