@@ -4,25 +4,46 @@ import AddRecipe from './pages/AddRecipe';
 import RecipeDetails from './pages/RecipeDetails';
 import MyRecipes from './pages/MyRecipes';
 import NavBar from './components/NavBar';
-import './index.css'
-import './App.css';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import PrivateRoute from './components/PrivateRoute';
-
+import Profile from './pages/Profile'; // if you added a profile page
+import './index.css';
+import './App.css';
 
 function App() {
-
   return (
     <>
-    <h1 className='text-yellow-800'> cool</h1>
       <NavBar />
-      <Routes><Route path="/login" element={<Login />} />
+      <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/add" element={<AddRecipe />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/recipes/:id" element={<RecipeDetails />} />
-        <Route path="/my-recipes" element={<MyRecipes />} />
-        <Route path='/add' element={<PrivateRoute><AddRecipe/></PrivateRoute>}/>
-        <Route path='/my-recipes' element={<PrivateRoute><MyRecipes/></PrivateRoute>}/>
+        <Route
+          path="/add"
+          element={
+            <PrivateRoute>
+              <AddRecipe />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/my-recipes"
+          element={
+            <PrivateRoute>
+              <MyRecipes />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </>
   );

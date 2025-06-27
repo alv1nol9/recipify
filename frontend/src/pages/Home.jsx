@@ -33,17 +33,24 @@ const Home = () => {
 
   console.log("🍝 Recipes loaded:", recipes);
 
-  return (
-    <div className="container mx-auto p-4   ">
-      <h1 className="font-bold text-8xl font-mono tracking-tighter">All Recipes</h1>
-      <div className='flex flex-wrap space-x-9'>
+ return (
+  <div className="container mx-auto px-4 py-6">
+    <h1 className="text-4xl sm:text-5xl font-bold text-center text-purple-700 mb-8">
+      🍽️ All Recipes
+    </h1>
+
+    {recipes.length === 0 ? (
+      <p className="text-center text-gray-500">No recipes found. Start by adding one!</p>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-center">
         {recipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
       </div>
+    )}
+  </div>
+);
 
-    </div>
-  );
 };
 
 export default Home;

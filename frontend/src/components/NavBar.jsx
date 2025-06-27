@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  const isLoggedIn = !!token;
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -10,25 +12,50 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="flex justify-center text-4xl space-x-3">
-      <span className="hover:bg-green-400 sm:bg-green-500 border-black font-sans">
-        <Link to="/"><strong>Home</strong></Link>
-      </span>
-      |
-      <span className="hover:bg-green-400 border-black font-sans">
-        <Link to="/add"><strong>Add Recipe</strong></Link>
-      </span>
-      |
-      <span className="hover:bg-green-400 border-black font-sans">
-        <Link to="/my-recipes"><strong>My Recipes</strong></Link>
-      </span>
-      |
-      <button
-        onClick={handleLogout}
-        className="hover:bg-red-400 border-black font-sans text-2xl px-2"
-      >
-        <strong>Logout</strong>
-      </button>
+    <nav className="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 shadow-md">
+      <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:space-x-6 text-lg sm:text-xl font-semibold">
+          <Link to="/" className="hover:text-purple-200 transition duration-200">
+            Home
+          </Link>
+          {isLoggedIn && (
+            <>
+              <Link to="/add" className="hover:text-purple-200 transition duration-200">
+                Add Recipe
+              </Link>
+              <Link to="/my-recipes" className="hover:text-purple-200 transition duration-200">
+                My Recipes
+              </Link>
+            </>
+          )}
+        </div>
+
+        <div className="flex gap-3">
+          {!isLoggedIn ? (
+            <>
+              <Link
+                to="/login"
+                className="bg-white text-pink-600 font-bold px-4 py-2 rounded-full hover:bg-pink-100 transition shadow"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="bg-white text-purple-600 font-bold px-4 py-2 rounded-full hover:bg-purple-100 transition shadow"
+              >
+                Register
+              </Link>
+            </>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="bg-white text-pink-600 font-bold px-4 py-2 rounded-full hover:bg-pink-100 transition shadow"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+      </div>
     </nav>
   );
 };
