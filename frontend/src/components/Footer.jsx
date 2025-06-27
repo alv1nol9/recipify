@@ -6,7 +6,7 @@ import { mdiTwitter } from '@mdi/js';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-4 mt-8 ">
+    <footer className="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 mt-8 ">
       <h1><strong>Contacts us</strong></h1>
       <div className='flex justify-start'>
         <div>
