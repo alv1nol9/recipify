@@ -7,7 +7,7 @@ import NavBar from './components/NavBar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import PrivateRoute from './components/PrivateRoute';
-import Profile from './pages/Profile'; // if you added a profile page
+import Profile from './pages/Profile';
 import './index.css';
 import './App.css';
 
