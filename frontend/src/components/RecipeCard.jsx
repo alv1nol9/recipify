@@ -17,31 +17,35 @@ const RecipeCard = ({ recipe }) => {
         const likedIds = data.map(l => l.recipe_id);
         setLiked(likedIds.includes(recipe.id));
       })
-      .catch(err => console.error('Like check failed', err));
+      .catch(err => console.error('💔 Like check failed', err));
   }, [recipe.id]);
 
   const toggleLike = async () => {
-    if (!token) return;
+    if (!token) return alert('Please log in to like recipes.');
     const url = `${API}/likes/${recipe.id}`;
     const method = liked ? 'DELETE' : 'POST';
 
-    const res = await fetch(url, {
-      method,
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (res.ok) setLiked(!liked);
-    else alert('Failed to toggle like');
+      if (res.ok) setLiked(!liked);
+      else alert('Failed to toggle like');
+    } catch (err) {
+      console.error('Toggle like failed:', err);
+    }
   };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-4 w-full sm:w-72 transition hover:shadow-xl">
       <img
-         src={
-        recipe.image_url
-          ? `http://localhost:5000${recipe.image_url}`
-          : 'https://via.placeholder.com/400x300?text=No+Image'
-      }
+        src={
+          recipe.image_url
+            ? `http://localhost:5000${recipe.image_url}`
+            : 'https://via.placeholder.com/400x300?text=No+Image'
+        }
         alt={recipe.title}
         className="w-full h-44 object-cover rounded-xl mb-3 border border-purple-200"
       />
@@ -67,4 +71,3 @@ const RecipeCard = ({ recipe }) => {
 };
 
 export default RecipeCard;
-

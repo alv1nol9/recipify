@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import RecipeCard from '../components/RecipeCard';
 import { isLoggedIn } from '../utils/auth';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API = 'https://recipify-backend-ewh5.onrender.com/api';
 
 const MyRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -17,6 +17,17 @@ const MyRecipes = () => {
     }
 
     const token = localStorage.getItem('token');
+    let currentUserId = null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      currentUserId = payload.identity;
+    } catch (err) {
+      console.error('Invalid token:', err);
+      localStorage.removeItem('token');
+      navigate('/login');
+      return;
+    }
 
     fetch(`${API}/recipes`, {
       headers: {
@@ -25,8 +36,6 @@ const MyRecipes = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const currentUserId = payload.identity;
         const userRecipes = data.filter((r) => r.user_id === currentUserId);
         setRecipes(userRecipes);
         setLoading(false);

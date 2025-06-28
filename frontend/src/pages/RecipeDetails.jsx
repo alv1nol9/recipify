@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import CommentForm from '../components/CommentForm';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API = 'https://recipify-backend-ewh5.onrender.com/api';
 
 const RecipeDetails = () => {
   const [recipe, setRecipe] = useState(null);
@@ -70,7 +70,7 @@ const RecipeDetails = () => {
 
     if (res.ok) {
       alert('Recipe deleted');
-      navigate('/'); // Go back to home
+      navigate('/');
     } else {
       alert('Failed to delete recipe');
     }
@@ -93,11 +93,14 @@ const RecipeDetails = () => {
           )}
         </div>
 
-        <img
-          src={`http://localhost:5000${recipe.image_url}`}
-          alt={recipe.title}
-          className="w-full max-h-96 object-cover rounded-md mb-4"
-        />
+        {recipe.image_url && (
+          <img
+            src={recipe.image_url}
+            alt={recipe.title}
+            className="w-full max-h-96 object-cover rounded-md mb-4"
+          />
+        )}
+
         <p className="text-gray-700 text-md mb-4">{recipe.description}</p>
 
         <h4 className="text-xl text-pink-700 font-semibold mb-2">Ingredients</h4>

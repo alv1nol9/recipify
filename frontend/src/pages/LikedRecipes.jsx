@@ -19,23 +19,25 @@ const LikedRecipes = () => {
 
     const fetchLikedRecipes = async () => {
       try {
-        const likeRes = await fetch(`${API}/likes`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const liked = await likeRes.json();
+        const [likesRes, recipesRes] = await Promise.all([
+          fetch(`${API}/likes`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API}/recipes`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-        const allRes = await fetch(`${API}/recipes`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const allRecipes = await allRes.json();
+        const liked = await likesRes.json();
+        const allRecipes = await recipesRes.json();
 
         const likedRecipeList = allRecipes.filter(r =>
-          liked.some(like => like.recipe_id === r.id)
+          liked.some(l => l.recipe_id === r.id)
         );
 
         setRecipes(likedRecipeList);
       } catch (err) {
-        console.error('Failed to load liked recipes:', err);
+        console.error('❌ Failed to load liked recipes:', err);
       } finally {
         setLoading(false);
       }
@@ -45,16 +47,16 @@ const LikedRecipes = () => {
   }, [navigate]);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Liked Recipes 💖</h1>
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 py-10 px-4 sm:px-6 lg:px-16">
+      <h1 className="text-4xl font-bold text-center text-pink-600 mb-8">💖 Liked Recipes</h1>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-center text-lg text-gray-600">Loading liked recipes...</p>
       ) : recipes.length === 0 ? (
-        <p>You haven’t liked any recipes yet.</p>
+        <p className="text-center text-gray-600">You haven’t liked any recipes yet.</p>
       ) : (
-        <div className="flex flex-wrap gap-4">
-          {recipes.map((recipe) => (
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 justify-items-center">
+          {recipes.map(recipe => (
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
         </div>

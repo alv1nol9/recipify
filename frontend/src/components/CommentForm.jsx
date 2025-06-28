@@ -5,8 +5,9 @@ const CommentForm = ({ onAddComment }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (text.trim() === '') return;
-    onAddComment(text);
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    onAddComment(trimmed);
     setText('');
   };
 
@@ -25,7 +26,12 @@ const CommentForm = ({ onAddComment }) => {
       <div className="flex justify-end mt-3">
         <button
           type="submit"
-          className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-600 hover:to-purple-500 text-white font-semibold px-5 py-2 rounded-xl transition shadow-md"
+          disabled={text.trim() === ''}
+          className={`px-5 py-2 rounded-xl font-semibold transition shadow-md ${
+            text.trim()
+              ? 'bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-600 hover:to-purple-500 text-white'
+              : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+          }`}
         >
           Post Comment
         </button>

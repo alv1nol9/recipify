@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecipeCard from '../components/RecipeCard';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API = 'https://recipify-backend-ewh5.onrender.com/api';
 
 const Profile = () => {
   const [myRecipes, setMyRecipes] = useState([]);
@@ -11,7 +11,15 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
-  const userId = token ? JSON.parse(atob(token.split('.')[1])).identity : null;
+
+  let userId = null;
+  try {
+    userId = token ? JSON.parse(atob(token.split('.')[1])).identity : null;
+  } catch {
+    localStorage.removeItem('token');
+    navigate('/login');
+    return;
+  }
 
   useEffect(() => {
     if (!token || !userId) {
@@ -39,6 +47,7 @@ const Profile = () => {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching profile data:', err);
+        setLoading(false);
       }
     };
 
@@ -49,10 +58,10 @@ const Profile = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-4">
-      <h1 className="text-4xl font-bold mb-6">👤 My Profile</h1>
+      <h1 className="text-4xl font-bold mb-6 text-purple-700">👤 My Profile</h1>
 
       <section className="mb-10">
-        <h2 className="text-2xl font-semibold mb-3">📌 My Recipes</h2>
+        <h2 className="text-2xl font-semibold mb-3 text-pink-600">📌 My Recipes</h2>
         {myRecipes.length === 0 ? (
           <p>You haven’t added any recipes yet.</p>
         ) : (
@@ -65,7 +74,7 @@ const Profile = () => {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold mb-3">💖 Liked Recipes</h2>
+        <h2 className="text-2xl font-semibold mb-3 text-pink-600">💖 Liked Recipes</h2>
         {likedRecipes.length === 0 ? (
           <p>You haven’t liked any recipes yet.</p>
         ) : (

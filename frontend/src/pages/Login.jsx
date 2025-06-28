@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-const API = 'http://localhost:5000/api';
+const API = 'https://recipify-backend-ewh5.onrender.com/api';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,13 +29,12 @@ const Login = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        // Fixed this line to use 'data.error' instead of 'data.message'
         setErrors({ password: data.error || 'Login failed' });
         return;
       }
 
       localStorage.setItem('token', data.access_token);
-      navigate('/my-recipes'); // Redirect after successful login
+      navigate('/my-recipes');
     } catch (err) {
       console.error('Login error:', err);
       setErrors({ password: 'Server error. Try again later.' });

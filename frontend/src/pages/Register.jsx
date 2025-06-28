@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API = 'https://recipify-backend-ewh5.onrender.com/api';
+
 const Register = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -18,14 +20,14 @@ const Register = () => {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch('http://localhost:5000/api/register', {
+      const res = await fetch(`${API}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
 
       if (res.ok) {
-        navigate('/profile'); // optional: redirect to profile page
+        navigate('/profile'); // or '/login' if you want them to log in first
       } else {
         const data = await res.json();
         setError(data.message || 'Registration failed');

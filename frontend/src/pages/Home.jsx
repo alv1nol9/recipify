@@ -49,25 +49,27 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <h1 className="text-4xl sm:text-5xl font-bold text-center text-purple-700 mb-8">
-        🍽️ All Recipes
-      </h1>
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-grow container mx-auto px-4 py-6">
+        <h1 className="text-4xl sm:text-5xl font-bold text-center text-purple-700 mb-8">
+          🍽️ All Recipes
+        </h1>
 
-      {loading ? (
-        <p className="text-center text-gray-500">Loading recipes...</p>
-      ) : recipes.length === 0 ? (
-        <p className="text-center text-gray-500">No recipes found. Start by adding one!</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-center">
-          {recipes.map(recipe => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-center text-gray-500">Loading recipes...</p>
+        ) : recipes.length === 0 ? (
+          <p className="text-center text-gray-500">No recipes found. Start by adding one!</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-center">
+            {recipes.map(recipe => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </div>
+        )}
+      </main>
 
-      )}
+      <Footer />
     </div>
-    
   );
 };
 
