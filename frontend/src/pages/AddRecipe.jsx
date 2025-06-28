@@ -4,7 +4,8 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { isLoggedIn } from '../utils/auth';
 
-const API = 'https://recipify-backend-ewh5.onrender.com/api';
+const API = import.meta.env.VITE_API_URL;
+
 
 const AddRecipe = () => {
   const [preview, setPreview] = useState(null);

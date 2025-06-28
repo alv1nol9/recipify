@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import RecipeCard from '../components/RecipeCard';
 import { isLoggedIn } from '../utils/auth';
 
-const API = 'https://recipify-backend-ewh5.onrender.com/api';
+const API = import.meta.env.VITE_API_URL;
+
 
 const MyRecipes = () => {
   const [recipes, setRecipes] = useState([]);

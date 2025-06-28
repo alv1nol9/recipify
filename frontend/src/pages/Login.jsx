@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-const API = 'https://recipify-backend-ewh5.onrender.com/api';
+const API = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const navigate = useNavigate();

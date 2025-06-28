@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API = 'https://recipify-backend-ewh5.onrender.com/api';
+const API = import.meta.env.VITE_API_URL;
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Register = () => {
       });
 
       if (res.ok) {
-        navigate('/profile'); // or '/login' if you want them to log in first
+        navigate('/profile'); 
       } else {
         const data = await res.json();
         setError(data.message || 'Registration failed');

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecipeCard from '../components/RecipeCard';
 
-const API = 'https://recipify-backend-ewh5.onrender.com/api';
+const API = import.meta.env.VITE_API_URL;
+
 
 const Profile = () => {
   const [myRecipes, setMyRecipes] = useState([]);

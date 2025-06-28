@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import CommentForm from '../components/CommentForm';
 
-const API = 'https://recipify-backend-ewh5.onrender.com/api';
+const API = import.meta.env.VITE_API_URL;
+
 
 const RecipeDetails = () => {
   const [recipe, setRecipe] = useState(null);
