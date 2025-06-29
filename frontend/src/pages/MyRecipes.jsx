@@ -30,15 +30,14 @@ const MyRecipes = () => {
       return;
     }
 
-    fetch(`${API}/recipes`, {
+    fetch(`${API}/my-recipes`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        const userRecipes = data.filter((r) => r.user_id === currentUserId);
-        setRecipes(userRecipes);
+        setRecipes(data);
         setLoading(false);
       })
       .catch((err) => {

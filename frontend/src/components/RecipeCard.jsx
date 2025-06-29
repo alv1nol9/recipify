@@ -38,6 +38,29 @@ const RecipeCard = ({ recipe }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this recipe?");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`${API}/recipes/${recipe.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        alert("Recipe deleted.");
+        window.location.reload(); // or notify parent to update UI
+      } else {
+        alert("Failed to delete recipe.");
+      }
+    } catch (err) {
+      console.error("🗑️ Delete failed:", err);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-4 w-full sm:w-72 transition hover:shadow-xl">
       <img
@@ -50,7 +73,7 @@ const RecipeCard = ({ recipe }) => {
         className="w-full h-44 object-cover rounded-xl mb-3 border border-purple-200"
       />
       <h2 className="text-xl font-semibold text-purple-700 mb-2 truncate">{recipe.title}</h2>
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-2 items-start">
         <button
           onClick={toggleLike}
           className={`text-sm px-3 py-1 rounded-full transition ${
@@ -65,6 +88,12 @@ const RecipeCard = ({ recipe }) => {
         >
           View
         </Link>
+        <button
+          onClick={handleDelete}
+          className="text-sm px-3 py-1 rounded-full bg-red-500 text-white hover:bg-red-600"
+        >
+          🗑 Delete
+        </button>
       </div>
     </div>
   );
